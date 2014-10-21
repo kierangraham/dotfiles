@@ -1,0 +1,160 @@
+#
+# Element
+#
+# Authors:
+#   Kieran Graham <me@kierangraham.com>
+#
+
+# Load dependencies.
+pmodload 'helper'
+
+function collapse_pwd {
+    echo $(pwd | sed -e "s,^$HOME,~,")
+}
+
+function prompt_char {
+    git branch >/dev/null 2>/dev/null && echo '±' && return
+    echo '○'
+}
+
+function virtualenv_info {
+    [ $VIRTUAL_ENV ] && echo '('`basename $VIRTUAL_ENV`') '
+}
+
+# Colors vary depending on time lapsed.
+# ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT="%F{green}"
+# ZSH_THEME_GIT_TIME_SHORT_COMMIT_MEDIUM="%F{yellow}"
+# ZSH_THEME_GIT_TIME_SINCE_COMMIT_LONG="%F{red}"
+# ZSH_THEME_GIT_TIME_SINCE_COMMIT_NEUTRAL="%F{white}"
+# Determine the time since last commit. If branch is clean,
+# use a neutral color, otherwise colors will vary according to time.
+function git_time_since_commit() {
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        # Only proceed if there is actually a commit.
+        if [[ $(git log 2>&1 > /dev/null | grep -c "^fatal: bad default revision") == 0 ]]; then
+            # Get the last commit.
+            last_commit=`git log --pretty=format:'%at' -1 2> /dev/null`
+            now=`date +%s`
+            seconds_since_last_commit=$((now-last_commit))
+
+            # Totals
+            MINUTES=$((seconds_since_last_commit / 60))
+            HOURS=$((seconds_since_last_commit/3600))
+
+            # Sub-hours and sub-minutes
+            DAYS=$((seconds_since_last_commit / 86400))
+            SUB_HOURS=$((HOURS % 24))
+            SUB_MINUTES=$((MINUTES % 60))
+
+            if [[ -n $(git status -s 2> /dev/null) ]]; then
+                if [ "$MINUTES" -gt 30 ]; then
+                    COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_LONG"
+                elif [ "$MINUTES" -gt 10 ]; then
+                    COLOR="$ZSH_THEME_GIT_TIME_SHORT_COMMIT_MEDIUM"
+                else
+                    COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT"
+                fi
+            else
+                COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_NEUTRAL"
+            fi
+
+            if [ "$HOURS" -gt 24 ]; then
+                echo "$COLOR${DAYS}d${SUB_HOURS}h${SUB_MINUTES}m%F{white}"
+            elif [ "$MINUTES" -gt 60 ]; then
+                echo "$COLOR${HOURS}h${SUB_MINUTES}m%F{white}"
+            else
+                echo "$COLOR${MINUTES}m%F{white}"
+            fi
+        fi
+    fi
+}
+
+function prompt_time() {
+    echo "`date +%H:%M:%S`"
+}
+
+function prompt_ruby_version() {
+    echo "`${ruby_info[version]}`"
+}
+
+function prompt_element_precmd {
+    setopt LOCAL_OPTIONS
+    unsetopt XTRACE KSH_ARRAYS
+
+    # Get Git repository information.
+  if (( $+functions[git-info] )); then
+    git-info
+  fi
+
+  # Get Ruby info
+  if (( $+functions[ruby-info] )); then
+    ruby-info
+  fi
+
+  # Get Virtual env info
+  if (( $+functions[python-info] )); then
+    python-info
+  fi
+
+  # Get Node info
+  if (( $+functions[node-info] )); then
+    node-info
+  fi
+}
+
+function prompt_element_setup {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Add hook for calling git-info before each command.
+  add-zsh-hook precmd prompt_element_precmd
+
+    # Set editor-info parameters.
+  zstyle ':prezto:module:editor:info:completing' format '%B%F{green}...%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format '%b%F{white}%D{%H:%M:%S}%f ○⨠'
+  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{red}♺%f'
+  zstyle ':prezto:module:editor:info:keymap:alternate' format '±'
+
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:action' format ':%%B%F{yellow}%s%f%%b'
+  zstyle ':prezto:module:git:info:added' format ' %%B%F{green}✚%f%%b'
+  zstyle ':prezto:module:git:info:clean' format '%F{green}✔%f'
+  zstyle ':prezto:module:git:info:ahead' format ' %%B%F{yellow}⬆%f%%b'
+  zstyle ':prezto:module:git:info:behind' format ' %%B%F{yellow}⬇%f%%b'
+  zstyle ':prezto:module:git:info:branch' format '%F{yellow}%b%f'
+  zstyle ':prezto:module:git:info:commit' format ':%F{green}%.7c%f'
+  zstyle ':prezto:module:git:info:deleted' format ' %%B%F{red}✖%f%%b'
+  zstyle ':prezto:module:git:info:modified' format '%B%F{green}+%F{red}-%f%b'
+  zstyle ':prezto:module:git:info:position' format ':%F{red}%p%f'
+  zstyle ':prezto:module:git:info:renamed' format ' %%B%F{magenta}➜%f%%b'
+  zstyle ':prezto:module:git:info:stashed' format ' %%B%F{cyan}✭%f%%b'
+  zstyle ':prezto:module:git:info:unmerged' format ' %%B%F{yellow}═%f%%b'
+  zstyle ':prezto:module:git:info:untracked' format '%%B%F{blue}●%f%%b'
+  zstyle ':prezto:module:git:info:keys' format \
+    'prompt' "on %b %C%m%u" \
+    'rprompt' '%A%B%S%a%d%m%r%U%u'
+
+  SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
+  PROMPT='
+%F{blue}%n%f at %F{green}%m%f in %F{magenta}$(collapse_pwd)%f ${git_info[prompt]}
+%B${editor_info[keymap]}%b '
+  RPROMPT="%f"
+}
+
+prompt_element_setup "$@"
+
+# PROMPT='%F{blue}%n%F{white} at %F{green}%m%F{white} in %F{magenta}$(collapse_pwd)%F{white}$(git_prompt_info)$(git_prompt_status) $(git_time_since_commit)
+# $(virtualenv_info)$(prompt_char)%F{white} '
+
+#RPROMPT='%F{white}$(prompt_time)'
+
+# ZSH_THEME_GIT_PROMPT_PREFIX=" on %F{yellow}"
+# ZSH_THEME_GIT_PROMPT_SUFFIX="%F{white}"
+# ZSH_THEME_GIT_PROMPT_DIRTY=" %F{green}+%F{red}-%F{white}%F{white}"
+# ZSH_THEME_GIT_PROMPT_UNTRACKED="%F{blue}•%F{white}"
+# ZSH_THEME_GIT_PROMPT_CLEAN="%F{green} ✔%F{white}"
