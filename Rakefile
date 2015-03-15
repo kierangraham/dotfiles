@@ -13,20 +13,20 @@ task :install => [:submodule_init, :submodules] do
   install_homebrew if RUBY_PLATFORM.downcase.include?("darwin")
 
   # this has all the runcoms from this directory.
-  install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
-  install_files(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
-  install_files(Dir.glob('ruby/*')) if want_to_install?('rubygems config (faster/no docs)')
-  install_files(Dir.glob('ctags/*')) if want_to_install?('ctags config (better js/ruby support)')
-  install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
-  install_files(Dir.glob('vimify/*')) if want_to_install?('vimification of command line tools')
+  file_operation(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
+  file_operation(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
+  file_operation(Dir.glob('ruby/*')) if want_to_install?('rubygems config (faster/no docs)')
+  file_operation(Dir.glob('ctags/*')) if want_to_install?('ctags config (better js/ruby support)')
+  file_operation(Dir.glob('tmux/*')) if want_to_install?('tmux config')
+  file_operation(Dir.glob('vimify/*')) if want_to_install?('vimification of command line tools')
   if want_to_install?('vim configuration (highly recommended)')
-    install_files(Dir.glob('{vim,vimrc}'))
+    file_operation(Dir.glob('{vim,vimrc}'))
     Rake::Task["install_vundle"].execute
   end
 
   Rake::Task["install_prezto"].execute
 
-  install_fonts
+  install_fonts if RUBY_PLATFORM.downcase.include?("darwin")
 
   install_term_theme if RUBY_PLATFORM.downcase.include?("darwin")
 
@@ -94,7 +94,7 @@ desc "Runs Vundle installer in a clean vim environment"
 task :install_vundle do
   puts "======================================================"
   puts "Installing and updating vundles."
-  puts "The installer will now proceed to run PluginInstall to install vundles."
+  puts "The installer will now proceed to run BundleInstall."
   puts "======================================================"
 
   puts ""
@@ -162,7 +162,8 @@ def install_homebrew
   puts "Installing Homebrew packages...There may be some warnings."
   puts "======================================================"
   run %{brew install zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher ghi hub}
-  run %{brew install macvim --custom-icons --with-override-system-vim --with-lua --with-luajit}
+  run %{brew install macvim --custom-icons --override-system-vim --with-lua --with-luajit --with-cscope --HEAD}
+  run %{brew install vim --with-lua}
   puts
   puts
 end
@@ -171,8 +172,7 @@ def install_fonts
   puts "======================================================"
   puts "Installing patched fonts for Powerline/Lightline."
   puts "======================================================"
-  run %{ cp -f $HOME/.yadr/fonts/* $HOME/Library/Fonts } if RUBY_PLATFORM.downcase.include?("darwin")
-  run %{ mkdir -p ~/.fonts && cp ~/.yadr/fonts/* ~/.fonts && fc-cache -vf ~/.fonts } if RUBY_PLATFORM.downcase.include?("linux")
+  run %{ cp -f $HOME/.yadr/fonts/* $HOME/Library/Fonts }
   puts
 end
 
@@ -249,7 +249,7 @@ def install_prezto
   run %{ ln -nfs "$HOME/.yadr/zsh/prezto" "${ZDOTDIR:-$HOME}/.zprezto" }
 
   # The prezto runcoms are only going to be installed if zprezto has never been installed
-  install_files(Dir.glob('zsh/prezto/runcoms/z*'), :symlink)
+  file_operation(Dir.glob('zsh/prezto/runcoms/z*'), :copy)
 
   puts
   puts "Overriding prezto ~/.zpreztorc with YADR's zpreztorc to enable additional modules..."
@@ -286,7 +286,7 @@ def want_to_install? (section)
   end
 end
 
-def install_files(files, method = :symlink)
+def file_operation(files, method = :symlink)
   files.each do |f|
     file = f.split('/').last
     source = "#{ENV["PWD"]}/#{f}"
@@ -310,12 +310,9 @@ def install_files(files, method = :symlink)
     # Temporary solution until we find a way to allow customization
     # This modifies zshrc to load all of yadr's zsh extensions.
     # Eventually yadr's zsh extensions should be ported to prezto modules.
-    source_config_code = "for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file"
     if file == 'zshrc'
-      File.open(target, 'a+') do |zshrc|
-        if zshrc.readlines.grep(/#{Regexp.escape(source_config_code)}/).empty?
-          zshrc.puts(source_config_code)
-        end
+      File.open(target, 'a') do |zshrc|
+        zshrc.puts('for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file')
       end
     end
 
