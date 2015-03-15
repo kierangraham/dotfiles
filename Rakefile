@@ -178,7 +178,7 @@ end
 
 def install_term_theme
   puts "======================================================"
-  puts "Installing iTerm2 solarized theme."
+  puts "Installing iTerm2 Monokai Elements theme."
   puts "======================================================"
   run %{ /usr/libexec/PlistBuddy -c "Add :'Custom Color Presets':'Monokai Elements' dict" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Merge 'iTerm2/Monokai Elements.itermcolors' :'Custom Color Presets':'Monokai Elements'" ~/Library/Preferences/com.googlecode.iterm2.plist }
@@ -203,7 +203,7 @@ def install_term_theme
 
   # Ask the user on which profile he wants to install the theme
   profiles = iTerm_profile_list
-  message = "I've found #{profiles.size} #{profiles.size>1 ? 'profiles': 'profile'} on your iTerm2 configuration, which one would you like to apply the Solarized theme to?"
+  message = "I've found #{profiles.size} #{profiles.size>1 ? 'profiles': 'profile'} on your iTerm2 configuration, which one would you like to apply the Monokai Elements theme to?"
   profiles << 'All'
   selected = ask message, profiles
 

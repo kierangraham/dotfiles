@@ -551,7 +551,7 @@ defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -stri
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
 
-# Use a modified version of the Solarized Dark theme by default in Terminal.app
+# Use a modified version of the Monokai Elements theme by default in Terminal.app
 TERM_PROFILE='Visor xterm-256color';
 CURRENT_PROFILE="$(defaults read com.apple.terminal 'Default Window Settings')";
 if [ "${CURRENT_PROFILE}" != "${TERM_PROFILE}" ]; then
@@ -566,7 +566,7 @@ fi;
 #defaults write com.apple.terminal FocusFollowsMouse -bool true
 #defaults write org.x.X11 wm_ffm -bool true
 
-# Install the Solarized Dark theme for iTerm
+# Install the Monokai Elements theme for iTerm
 open "${HOME}/init/Monokai Elements.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm
