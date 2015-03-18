@@ -1,3 +1,4 @@
 set -o vi
-export EDITOR=subl
-export VISUAL=subl
+export EDITOR=sub
+export VISUAL=sub
+export BUNDLER_EDITOR=sub
