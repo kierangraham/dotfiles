@@ -112,6 +112,18 @@ task :install_vundle do
   Vundle::update_vundle
 end
 
+desc "Install Sublime Text 3 packages into ~/Library/Application Support/Sublime Text 3/"
+task :install_sublime_packages
+  puts
+  puts "======================================================"
+  puts "Installing Sublime Text 3 Packages"
+  puts "======================================================"
+  puts
+
+  run %{ mkdir -p "$HOME/Library/Application Support/Sublime Text 3" }
+  run %{ cp -R "$HOME/.yadr/Sublime/" "$HOME/Library/Application Support/Sublime Text 3/" }
+end
+
 task :default => 'install'
 
 
@@ -295,14 +307,6 @@ def install_prezto
       run %{ chsh -s /bin/zsh }
     end
   end
-end
-
-def install_sublime_packages
-  puts
-  puts "Installing Sublime Text 3 Packages"
-
-  run %{ mkdir -p "$HOME/Library/Application Support/Sublime Text 3" }
-  run %{ cp -R "$HOME/.yadr/Sublime/" "$HOME/Library/Application Support/Sublime Text 3/" }
 end
 
 def want_to_install? (section)
