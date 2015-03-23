@@ -113,7 +113,7 @@ task :install_vundle do
 end
 
 desc "Install Sublime Text 3 packages into ~/Library/Application Support/Sublime Text 3/"
-task :install_sublime_packages
+task :install_sublime_packages do
   puts
   puts "======================================================"
   puts "Installing Sublime Text 3 Packages"
