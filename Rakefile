@@ -30,6 +30,8 @@ task :install => [:submodule_init, :submodules] do
 
   install_term_theme if RUBY_PLATFORM.downcase.include?("darwin")
 
+  Rake::Task["install_sublime_packages"].execute
+
   run_bundle_config
 
   success_msg("installed")
@@ -292,6 +294,14 @@ def install_prezto
       run %{ chsh -s /bin/zsh }
     end
   end
+end
+
+def install_sublime_packages
+  puts
+  puts "Installing Sublime Text 3 Packages"
+
+  run %{ mkdir -p "$HOME/Library/Application Support/Sublime Text 3" }
+  run %{ cp -R "$HOME/.yadr/Sublime/" "$HOME/Library/Application Support/Sublime Text 3/" }
 end
 
 def want_to_install? (section)
