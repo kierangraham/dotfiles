@@ -121,6 +121,7 @@ task :install_sublime_packages do
 
   run %{ mkdir -p "$HOME/Library/Application Support/Sublime Text 3" }
   run %{ cp -R "$HOME/.yadr/Sublime/" "$HOME/Library/Application Support/Sublime Text 3/" }
+  run %{ ln -s /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl /usr/local/bin/sub }
 end
 
 task :default => 'install'
