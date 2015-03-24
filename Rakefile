@@ -31,6 +31,7 @@ task :install => [:submodule_init, :submodules] do
   install_term_theme if RUBY_PLATFORM.downcase.include?("darwin")
 
   Rake::Task["install_sublime_packages"].execute
+  Rake::Task["install_rbenv"].execute
 
   run_bundle_config
 
@@ -121,7 +122,23 @@ task :install_sublime_packages do
 
   run %{ mkdir -p "$HOME/Library/Application Support/Sublime Text 3" }
   run %{ cp -R "$HOME/.yadr/Sublime/" "$HOME/Library/Application Support/Sublime Text 3/" }
-  run %{ ln -s /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl /usr/local/bin/sub }
+  run %{ ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/sub }
+end
+
+desc "Install Rbenv"
+task :install_rbenv do
+  puts
+  puts "======================================================"
+  puts "Installing Rbenv"
+  puts "======================================================"
+  puts
+
+  run %{ brew install rbenv ruby-build }
+  run %{ git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build }
+  run %{ rbenv install 2.2.0 }
+  run %{ rbenv global 2.2.0 }
+  run %{ gem install bundler }
+  run %{ rbenv rehash }
 end
 
 task :default => 'install'
@@ -208,6 +225,21 @@ def install_term_theme
   end
 
   # Settings
+  run %{ /usr/libexec/PlistBuddy -c "Add 'UseLionStyleFullscreen' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'Show Toolbelt' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'ShowBookmarkName' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'ShowFullScreenTabBar' bool true" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'ShowPaneTitles' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'SplitPaneDimmingAmount' real 0.100000001490116" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'UseBorder' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'HideTab' bool true" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'HideMenuBarInFullscreen' bool true" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'DimOnlyText' bool false" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'DimInactiveSplitPanes' bool true" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'Hotkey' bool true" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'HotkeyChar' integer 167" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'HotkeyCode' integer 10" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Add 'HotkeyModifiers' integer 1048840" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'UseLionStyleFullscreen' false" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'Show Toolbelt' false" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'ShowBookmarkName' false" ~/Library/Preferences/com.googlecode.iterm2.plist }
@@ -216,14 +248,13 @@ def install_term_theme
   run %{ /usr/libexec/PlistBuddy -c "Set 'SplitPaneDimmingAmount' 0.100000001490116" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'UseBorder' false" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'HideTab' true" ~/Library/Preferences/com.googlecode.iterm2.plist }
-  run %{ /usr/libexec/PlistBuddy -c "Set 'HideMenuBarInFullscreen' yes" ~/Library/Preferences/com.googlecode.iterm2.plist }
+  run %{ /usr/libexec/PlistBuddy -c "Set 'HideMenuBarInFullscreen' true" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'DimOnlyText' false" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'DimInactiveSplitPanes' true" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'Hotkey' true" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'HotkeyChar' 167" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'HotkeyCode' 10" ~/Library/Preferences/com.googlecode.iterm2.plist }
   run %{ /usr/libexec/PlistBuddy -c "Set 'HotkeyModifiers' 1048840" ~/Library/Preferences/com.googlecode.iterm2.plist }
-
 
   # Ask the user which theme he wants to install
   message = "Which theme would you like to apply to your iTerm2 profile?"
