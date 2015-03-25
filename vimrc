@@ -108,4 +108,5 @@ so ~/.yadr/vim/settings.vim
 
 let g:yadr_using_unsolarized_terminal = 1
 let g:yadr_disable_solarized_enhancements = 1
+
 colorscheme "monokai"
