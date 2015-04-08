@@ -33,8 +33,6 @@ task :install => [:submodule_init, :submodules] do
   Rake::Task["install_sublime_packages"].execute
   Rake::Task["install_rbenv"].execute
 
-  run_bundle_config
-
   success_msg("installed")
 end
 
@@ -134,12 +132,15 @@ task :install_rbenv do
   puts "======================================================"
   puts
 
-  run %{ brew install rbenv ruby-build }
+  run %{ brew install rbenv ruby-build readline openssl }
   run %{ git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build }
   run %{ rbenv install 2.2.0 }
   run %{ rbenv global 2.2.0 }
-  run %{ gem install bundler }
   run %{ rbenv rehash }
+  run %{ rbenv exec gem update --system }
+  run %{ rbenv exec gem install bundler }
+
+  run_bundle_config
 end
 
 task :default => 'install'
@@ -168,7 +169,7 @@ def run_bundle_config
   puts "======================================================"
   puts "Configuring Bundlers for parallel gem installation"
   puts "======================================================"
-  run %{ bundle config --global jobs #{bundler_jobs} }
+  run %{ rbenv exec bundle config --global jobs #{bundler_jobs} }
   puts
 end
 
