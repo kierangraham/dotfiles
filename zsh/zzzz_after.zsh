@@ -5,4 +5,5 @@ if [ -d $HOME/.zsh.after/ ]; then
   fi
 fi
 
-export PATH=./bin:$PATH
+
+export PATH=./bin:node_modules/.bin:$PATH
