@@ -100,6 +100,7 @@
   pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
 [mergetool]
   prompt = false
+	trustExitCode = true
 [mergetool "Kaleidoscope"]
   cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
   trustExitCode = true
@@ -120,6 +121,7 @@
   editor = vim
   excludesfile = ~/.yadr/git/gitignore
 	ignorecase = false
+	trustctime = false
 [advice]
   statusHints = false
 [diff]
@@ -133,3 +135,10 @@
   enabled = true
 [include]
   path = .gitconfig.user
+  #driver for merging Xcode project files
+[mergetool "mergepbx"]
+    cmd = mergepbx "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
+[filter "hawser"]
+	clean = git hawser clean %f
+	smudge = git hawser smudge %f
+	required = true

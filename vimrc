@@ -109,4 +109,10 @@ so ~/.yadr/vim/settings.vim
 let g:yadr_using_unsolarized_terminal = 1
 let g:yadr_disable_solarized_enhancements = 1
 
+if !has("gui_running")
+    let g:solarized_termtrans=1
+    let g:solarized_termcolors=256
+endif
+
+set background=dark
 colorscheme monokai
