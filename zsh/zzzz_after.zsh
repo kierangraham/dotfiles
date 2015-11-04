@@ -6,4 +6,6 @@ if [ -d $HOME/.zsh.after/ ]; then
 fi
 
 
-export PATH=./bin:node_modules/.bin:$PATH
+export PATH=./bin:node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+eval "$(rbenv init -)"
