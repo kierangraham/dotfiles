@@ -32,6 +32,7 @@ task :install => [:submodule_init, :submodules] do
 
   Rake::Task["install_sublime_packages"].execute
   Rake::Task["install_rbenv"].execute
+  Rake::Task["install_gmake"].execute
 
   success_msg("installed")
 end
@@ -141,6 +142,18 @@ task :install_rbenv do
 
   run_bundle_config
 end
+
+desc "Install GMake"
+task :install_gmake do
+  puts
+  puts "======================================================"
+  puts "Installing Gmake"
+  puts "======================================================"
+  puts
+
+  run %{ brew install make }
+end
+
 
 task :default => 'install'
 
