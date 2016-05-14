@@ -134,7 +134,6 @@ task :install_rbenv do
   puts
 
   run %{ brew install rbenv ruby-build readline openssl }
-  run %{ git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build }
   run %{ rbenv install 2.2.0 }
   run %{ rbenv global 2.2.0 }
   run %{ rbenv rehash }
