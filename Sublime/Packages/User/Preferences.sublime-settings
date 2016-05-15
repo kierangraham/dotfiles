@@ -104,23 +104,9 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"All Autocomplete",
-		"C++ Starting Kit",
-		"DashDoc",
-		"DocBlockr",
-		"Git-StatusBar",
-		"GitHub Flavored Markdown Preview",
-		"HexViewer",
 		"JavaScript",
-		"JavaScriptNext - ES6 Syntax",
 		"Markdown",
-		"Pretty JSON",
-		"SublimeClang",
-		"SublimeCodeIntel",
-		"SublimeLinter-jshint",
-		"SublimeLinter-json",
-		"SublimeLinter-rubocop",
-		"Vintage"
+		"SublimeClang"
 	],
 	"indent_subsequent_lines": true,
 	"index_files": true,
