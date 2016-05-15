@@ -1,0 +1,4 @@
+{
+  "shell_cmd": "BREWBOT_DEBUG=y make clean all",
+  "name": "Make – BREWBOT_DEBUG=y"
+}

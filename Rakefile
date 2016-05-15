@@ -31,6 +31,7 @@ task :install => [:submodule_init, :submodules] do
   install_term_theme if RUBY_PLATFORM.downcase.include?("darwin")
 
   Rake::Task["install_sublime_packages"].execute
+  Rake::Task["install_atom_packages"].execute
   Rake::Task["install_rbenv"].execute
   Rake::Task["install_gmake"].execute
 
@@ -125,6 +126,19 @@ task :install_sublime_packages do
   run %{ ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/sub }
 end
 
+desc "Install Atom config + packages into ~/.atom"
+task :install_atom_packages do
+  puts
+  puts "======================================================"
+  puts "Installing Atom Packages + Config"
+  puts "======================================================"
+  puts
+
+  run %{ mkdir -p "$HOME/.atom" }
+  run %{ cp -R "$HOME/.yadr/Atom/" "$HOME/.atom/" }
+  run %{ apm install --packages-file $HOME/.atom/packages.list }
+end
+
 desc "Install Rbenv"
 task :install_rbenv do
   puts
@@ -134,11 +148,6 @@ task :install_rbenv do
   puts
 
   run %{ brew install rbenv ruby-build readline openssl }
-  run %{ rbenv install 2.2.0 }
-  run %{ rbenv global 2.2.0 }
-  run %{ rbenv rehash }
-  run %{ rbenv exec gem update --system }
-  run %{ rbenv exec gem install bundler }
 
   run_bundle_config
 end
@@ -177,7 +186,7 @@ end
 def run_bundle_config
   return unless system("which bundle")
 
-  bundler_jobs = number_of_cores - 1
+  bundler_jobs = number_of_cores
   puts "======================================================"
   puts "Configuring Bundlers for parallel gem installation"
   puts "======================================================"
