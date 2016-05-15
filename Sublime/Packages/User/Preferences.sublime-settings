@@ -106,7 +106,8 @@
 	[
 		"JavaScript",
 		"Markdown",
-		"SublimeClang"
+		"SublimeClang",
+		"Vintage"
 	],
 	"indent_subsequent_lines": true,
 	"index_files": true,
