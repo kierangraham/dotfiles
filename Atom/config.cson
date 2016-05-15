@@ -1,0 +1,64 @@
+"*":
+  autosave:
+    enabled: true
+  "browser-plus":
+    fav: 0
+    history: 0
+    homepage: "http://localhost:4200"
+  core:
+    destroyEmptyPanes: false
+    disabledPackages: [
+      "wrap-guide"
+      "erb-helper"
+      "dec-hex-oct-bin"
+    ]
+    ignoredNames: [
+      ".git"
+      ".svn"
+      ".DS_Store"
+    ]
+    themes: [
+      "isotope-ui"
+      "monokai-elements"
+    ]
+  editor:
+    backUpBeforeSaving: true
+    fontFamily: "Hasklig"
+    fontSize: 12
+    invisibles: {}
+    showIndentGuide: true
+  "exception-reporting":
+    userId: "23afc01c-c6b7-28af-bfa7-fdb8947e1482"
+  "file-icons":
+    coloured: false
+  "git-diff": {}
+  "isotope-ui":
+    customBackgroundColor: true
+    customBackgroundColorPicker:
+      red: 26
+      green: 26
+      blue: 26
+      alpha: 1
+    fontWeight: "Regular"
+    lowContrastTooltip: true
+    minimalMode: true
+  "markdown-preview":
+    useGitHubStyle: true
+  metrics:
+    userId: "f9b1dd9fc7393cd9d2b3026a61fe98394848ed65"
+  minimap:
+    autoToggle: true
+    charHeight: 1
+    displayPluginsControls: false
+    interline: 2
+    scrollAnimation: true
+  "new-file-plus": {}
+  "one-dark-ui": {}
+  "release-notes":
+    viewedVersion: "0.60.0"
+  "tool-bar":
+    visible: false
+  "tree-view": {}
+  "tree-view-git-status": {}
+  welcome:
+    showOnStartup: false
